@@ -239,7 +239,7 @@ PORT=3001 npm run dev
 
 Contributing
 ------------
-This is a demonstration project for a placement drive. If you'd like to extend it:
+This is a demonstration project for a placement drive:
 
 1. **Add new chart types**: Create new components in `components/charts/` using `useChartRenderer`
 2. **Real-time data**: Replace `setInterval` in `DataProvider` with WebSocket/SSE
