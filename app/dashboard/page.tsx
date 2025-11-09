@@ -80,7 +80,7 @@ export default function Page() {
                   background: '#10b98120', 
                   color: '#10b981',
                   border: '1px solid #10b98140'
-                }}>1500 pts</span>
+                }}>800 pts</span>
               </div>
               <div style={{ height: 'calc(100% - 40px)' }}>
                 <LineChart />

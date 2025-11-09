@@ -258,9 +258,10 @@ export default function DataProvider({ children }: DataProviderProps) {
     startStream(100);
 
     // Throttle React state updates to fix the FPS drop issue
-    // Only update UI once per second, but data still accumulates every 100ms
+    // Only update UI once every 2 seconds to reduce re-render overhead
+    // Data still accumulates every 100ms in background
     let lastUpdateTime = 0;
-    const updateThrottleInterval = 1000;
+    const updateThrottleInterval = 2000; // Increased from 1000ms to 2000ms
     
     const throttledUpdateTimer = setInterval(() => {
       const now = performance.now();
