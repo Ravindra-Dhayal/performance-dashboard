@@ -57,9 +57,9 @@ export function useVirtualWindow(
   scrollTop: number
 ): VirtualWindow {
 /**
- * Calculate which item is at top of viewport
- * Simple math: divide scroll position by item height
- * Example: scrolled 320px down, items are 32px → start at item 10
+ * Figure out which row is at the top of the visible area
+ * Just divide scroll position by row height
+ * e.g., scrolled 320px with 32px rows = row 10 is at top
  */
   const start = Math.floor(scrollTop / itemHeight);  /**
    * Calculate Visible Count

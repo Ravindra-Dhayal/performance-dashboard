@@ -28,17 +28,17 @@ interface RenderOptions {
 /**
  * useChartRenderer Hook
  * 
- * Custom hook for high-performance canvas rendering.
- * This was the trickiest part to get right!
+ * This hook handles the canvas rendering with RAF loop.
+ * Took me a while to get the performance right - main insight was using
+ * refs instead of state for the data points.
  * 
- * Key learnings:
- * - RAF (requestAnimationFrame) syncs with browser's repaint cycle
- * - 60 FPS means each frame has ~16.67ms budget
- * - Using refs instead of state prevents React re-renders on every data update
- * - ResizeObserver is better than checking size every frame
+ * Why refs work better:
+ * - When I used state, every new data point triggered a re-render
+ * - With 100ms updates that's 10 re-renders per second
+ * - Refs let the canvas read data without causing React to re-render
  * 
- * Initially tried storing data in state but that caused re-renders on every 
- * new point (100ms * 60s = 600 re-renders per minute!). Refs fixed that.
+ * Also learned that ResizeObserver is way better than checking canvas size
+ * every frame - saves a lot of unnecessary work.
  * - Single RAF loop per canvas
  * 
  * @param canvasRef - Reference to canvas element

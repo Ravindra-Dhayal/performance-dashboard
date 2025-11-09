@@ -245,22 +245,22 @@ export default function DataProvider({ children }: DataProviderProps) {
           rawRef.current.push(p);
         }
         
-        // Trim old data to prevent memory growth
+        // Keep array from growing forever
         if (rawRef.current.length > 20000) {
           rawRef.current.splice(0, rawRef.current.length - 20000);
         }
         
-        // Don't call setPoints here - let the throttled timer handle it
-        // This prevents 10 React re-renders per second (100ms interval)
+        // Not updating React state here - doing it in the throttled timer below
+        // Found that updating 10 times per second was killing performance
       }, intervalMs) as unknown as number;
     }
 
     startStream(100);
 
-    // Throttle React updates to reduce re-render frequency
-    // Update visible points max once per second instead of every 100ms
+    // Throttle React state updates to fix the FPS drop issue
+    // Only update UI once per second, but data still accumulates every 100ms
     let lastUpdateTime = 0;
-    const updateThrottleInterval = 1000; // 1 second
+    const updateThrottleInterval = 1000;
     
     const throttledUpdateTimer = setInterval(() => {
       const now = performance.now();
@@ -270,15 +270,14 @@ export default function DataProvider({ children }: DataProviderProps) {
       }
     }, updateThrottleInterval);
 
-    // try to create the aggregator worker (client-only)
+    // Try to setup the worker for aggregation
     try {
-      // Worker path relative to this file - use dynamic import URL
-      // Note: bundlers must support new Worker(new URL(...))
-      // Only attempt in browser
+      // This bundler syntax was tricky to figure out
+      // Only works in browser, not on server
       if (typeof window !== 'undefined' && 'Worker' in window) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  worker = new Worker(new URL('../../workers/aggregator.worker.ts', import.meta.url), { type: 'module' });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        worker = new Worker(new URL('../../workers/aggregator.worker.ts', import.meta.url), { type: 'module' });
         worker.addEventListener('message', (ev) => {
           const data = ev.data || {};
           const id = data.id;
